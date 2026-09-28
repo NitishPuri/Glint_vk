@@ -50,9 +50,27 @@ target_include_directories(imgui PUBLIC
 target_link_libraries(imgui PUBLIC Vulkan::Vulkan glfw)
 set_target_properties(imgui PROPERTIES FOLDER ${THIRD_PARTY_DIR})
 
-# ImGui needs GLFW
-# if(NOT TARGET glfw)
-#     # Try to find existing GLFW or add your GLFW subdirectory here
-#     find_package(glfw3 REQUIRED)
-#     target_link_libraries(imgui PUBLIC glfw)
-# endif()
+
+# ktx
+set(KTX_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ktx)
+set(KTX_SOURCES
+    ${KTX_DIR}/lib/texture.c
+    ${KTX_DIR}/lib/hashlist.c
+    ${KTX_DIR}/lib/checkheader.c
+    ${KTX_DIR}/lib/swap.c
+    ${KTX_DIR}/lib/memstream.c
+    ${KTX_DIR}/lib/filestream.c
+    ${KTX_DIR}/lib/vkloader.c)
+add_library(ktx STATIC ${KTX_SOURCES})
+target_include_directories(ktx PUBLIC 
+    ${KTX_DIR}/include
+    ${KTX_DIR}/other_include
+)
+target_link_libraries(ktx PUBLIC Vulkan::Vulkan)
+set_target_properties(ktx PROPERTIES FOLDER ${THIRD_PARTY_DIR})
+
+# tinygltf
+set(TINYGLTF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tinygltf)
+add_library(tinygltf INTERFACE)
+target_include_directories(tinygltf INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinygltf)
+set_target_properties(tinygltf PROPERTIES FOLDER ${THIRD_PARTY_DIR})

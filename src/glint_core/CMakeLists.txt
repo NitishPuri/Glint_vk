@@ -18,6 +18,9 @@ set(GLINT_SOURCES
     renderer/vk_tools.cpp
     renderer/descriptor.cpp    
     renderer/texture.cpp
+
+    vks/vk_gltf_model.cpp
+    vks/VulkanDevice.cpp
 )
 
 set (GLINT_INCLUDE_DIRS
@@ -42,6 +45,9 @@ set(GLINT_HEADERS
     renderer/vk_tools.h
     renderer/descriptor.h    
     renderer/texture.h
+
+    vks/vk_gltf_model.h
+    vks/VulkanDevice.h
 )
 
 add_library(glint_core STATIC
@@ -64,6 +70,8 @@ target_link_libraries(glint_core PUBLIC
     stb 
     tinyobjloader
     arcball_camera
+    ktx
+    tinygltf
 )
 
 # TODO: Use path shader bin path relative to bin path 

@@ -13,6 +13,8 @@ set(GLINT_SAMPLE_SOURCES
     cube_sample.cpp
     dynamic_uniform_buffer.h
     dynamic_uniform_buffer.cpp
+    # specialization_constants.h
+    # specialization_constants.cpp
 )
 
 add_executable(glint_samples

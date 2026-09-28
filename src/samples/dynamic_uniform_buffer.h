@@ -33,13 +33,6 @@ class DynamicUniformBuffer : public Sample {
   std::unique_ptr<DescriptorSetLayout> m_DescriptorSetLayout;
   std::unique_ptr<DescriptorPool> m_DescriptorPool;
   std::unique_ptr<Descriptor> m_Descriptor;
-  // VkDescriptorSetLayout m_Layout = VK_NULL_HANDLE;
-
-  // in base
-  // VkDescriptorPool descriptorPool{VK_NULL_HANDLE};
-  // in sample
-  // VkDescriptorSet descriptorSet{VK_NULL_HANDLE};
-  // VkDescriptorSetLayout descriptorSetLayout{VK_NULL_HANDLE};
 
   std::vector<VkDescriptorSetLayoutBinding> m_Bindings;
 

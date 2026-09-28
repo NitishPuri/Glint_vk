@@ -8,6 +8,8 @@
 - [x] Camera system
 - [x] Input handling
 - [x] Sample Management
+- Integrate ktx
+- Integrate vma
 - Basic lighting : diffuse, specular, point lights, spot lights
 - Materials system + scene viewer
   - gltf viewer

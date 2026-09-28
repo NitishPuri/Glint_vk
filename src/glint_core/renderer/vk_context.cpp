@@ -353,6 +353,7 @@ VkContext::QueueFamilyIndices VkContext::findQueueFamilies(VkPhysicalDevice devi
   return indices;
 }
 
+// TODO: Compare this wiht VulklanDevice::getMemoryType
 uint32_t VkContext::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
   VkPhysicalDeviceMemoryProperties memProperties;
   vkGetPhysicalDeviceMemoryProperties(m_PhysicalDevice, &memProperties);

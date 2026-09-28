@@ -1,20 +1,253 @@
-Creating window: 800 x 600  -  Glint - Triangle
-glfwCreateWindow
-Renderer {
+Glint Sample Browser!
+initWindow {
+  Creating window: 800 x 600  -  Glint - Samples
+  glfwCreateWindow
 }
-init {
-  VkContext {
+initRenderer {
+  Renderer {
   }
   init {
-    createInstance {
-      checkValidationLayerSupport {
+    VkContext {
+    }
+    init {
+      createInstance {
+        checkValidationLayerSupport {
+          found validation layer: VK_LAYER_KHRONOS_validation
+        }
+        getRequiredExtensions {
+          Required Extensions: 3
+            VK_KHR_surface
+            VK_KHR_xcb_surface
+            VK_EXT_debug_utils
+        }
+        validation layers are enabled
+        populateDebugMessengerCreateInfo {
+        }
+        vkCreateInstance(&createInfo, nullptr, &m_Instance)
+      }
+      setupDebugMessenger {
+        populateDebugMessengerCreateInfo {
+        }
+        CreateDebugUtilsMessengerEXT {
+        }
+      }
+      createSurface {
+        createSurface {
+          VkResult result = glfwCreateWindowSurface(instance, m_Window, nullptr, &surface)
+        }
+      }
+      pickPhysicalDevice {
+        isDeviceSuitable {
+          findQueueFamilies {
+          }
+          checkDeviceExtensionSupport {
+          }
+        }
+        found suitable device AMD Radeon Graphics (RADV RENOIR)
+        Max Usable Sample Count: 8
+      }
+      createLogicalDevice {
+        findQueueFamilies {
+        }
+        vkCreateDevice(m_PhysicalDevice, &createInfo, nullptr, &m_Device)
+      }
+    }
+    SwapChain {
+      createSwapChain {
+        querySwapChainSupport {
+        }
+        chooseSwapSurfaceFormat {
+        }
+        chooseSwapPresentMode {
+          Using VK_PRESENT_MODE_MAILBOX_KHR (triple buffering)
+        }
+        chooseSwapExtent {
+        }
+        graphics and present queues are the same
+        Using exclusive sharing mode
+        Set debug name for1000001000 to SwapChain
+        Set debug name for10 to SwapChainImage0
+        Set debug name for10 to SwapChainImage1
+        Set debug name for10 to SwapChainImage2
+        Set debug name for10 to SwapChainImage3
+      }
+      createImageViews {
+      }
+      createDepthResources {
+        Set debug name for10 to Depth Image
+        Set debug name for8 to Depth Image Memory
+        Set debug name for14 to Depth Image View
+        transitionImageLayout {
+        }
+      }
+      createColorResources {
+        Set debug name for10 to MSAA Image
+        Set debug name for8 to MSAA Memory
+      }
+    }
+    RenderPass {
+      createRenderPass {
+      }
+    }
+    createFramebuffers {
+    }
+    SynchronizationManager {
+    }
+    Renderer initialized with2 frames in flight and 4 swap chain images
+  }
+}
+initImgui {
+  init {
+  }
+}
+initSamples {
+  init {
+  }
+  waitIdle {
+  }
+  CubeSample {
+  }
+  Active sample set to:CubeSample
+  Creating resources for2 frames in flight
+  createTexturedCube {
+    Mesh {
+      createVertexBuffer {
+        copyBuffer {
+        }
+      }
+      createIndexBuffer {
+        copyBuffer {
+        }
+      }
+      Mesh created with24 vertices and 36 indices
+    }
+  }
+  Texture {
+    createTextureImage {
+      Loading texture from/mnt/e/tree/graphics/Glint_vk/res/texture.jpg
+      Texture loaded:512 x 512 pixels, 3 channels
+      Set debug name for9 to Texture Staging Buffer
+      Set debug name for8 to Texture Staging Buffer Memory
+      Set debug name for10 to Texture Buffer
+      Set debug name for8 to Texture Buffer Memory
+      transitionImageLayout {
+      }
+      generateMipmaps {
+        vkCmdPipelineBarrier(commandBuffer, VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT, 0, 0, nullptr, 0, nullptr, 1, &barrier)
+      }
+    }
+  }
+  createPipeline {
+    Pipeline {
+      createGraphicsPipeline {
+        readFile {
+          Loading filename:/mnt/e/tree/graphics/Glint_vk/build/Debug/bin/shaders/basic_tex.vert.spv fileSize: 1768 bytes
+        }
+        readFile {
+          Loading filename:/mnt/e/tree/graphics/Glint_vk/build/Debug/bin/shaders/basic_tex.frag.spv fileSize: 828 bytes
+        }
+        createShaderModule {
+        }
+        createShaderModule {
+        }
+        getBindingDescription {
+        }
+        getAttributeDescriptions {
+        }
+        Including descriptor set layout in pipeline layout
+        Cleanup shader modules
+        vkDestroyShaderModule(m_Context->getDevice(), fragShaderModule, nullptr)
+        vkDestroyShaderModule(m_Context->getDevice(), vertShaderModule, nullptr)
+      }
+    }
+  }
+  DescriptorPool {
+  }
+  UniformBuffer {
+    Created uniform buffer of size192 bytes
+  }
+  UniformBuffer {
+    Created uniform buffer of size192 bytes
+  }
+  Descriptor {
+    Allocated2 descriptor sets
+  }
+  updateUniformBuffer {
+  }
+  updateTextureSampler {
+  }
+}
+mainLoop {
+  waitForFence {
+  }
+  bind {
+  }
+  draw {
+  }
+  resetFence {
+  }
+  waitIdle {
+  }
+}
+cleanup {
+  cleanup {
+    waitIdle {
+    }
+    Cleaning up active sample:CubeSample
+    cleanup {
+      ~Descriptor {
+      }
+      ~DescriptorPool {
+      }
+      ~DescriptorSetLayout {
+      }
+      ~UniformBuffer {
+      }
+      ~UniformBuffer {
+      }
+      ~Texture {
+      }
+      ~Mesh {
+        vkDestroyBuffer(device, m_VertexBuffer, nullptr)
+        vkFreeMemory(device, m_VertexBufferMemory, nullptr)
+        vkDestroyBuffer(device, m_IndexBuffer, nullptr)
+        vkFreeMemory(device, m_IndexBufferMemory, nullptr)
       }
     }
   }
 }
-[ERROR]main validation layers requested, but not available!
+cleanup {
+}
 ~Renderer {
+}
+~SynchronizationManager {
+}
+~Pipeline {
+  vkDestroyPipeline(device, m_Pipeline, nullptr)
+  vkDestroyPipelineLayout(device, m_PipelineLayout, nullptr)
+}
+~RenderPass {
+  vkDestroyRenderPass(m_Context->getDevice(), m_RenderPass, nullptr)
+}
+~SwapChain {
+  cleanup {
+    Destroying MSAA resources
+    cleanupDepthResources {
+    }
+    Destroying 4  framebuffers
+    Destroying 4  image views
+    vkDestroySwapchainKHR(device, m_SwapChain, nullptr)
+  }
 }
 ~VkContext {
   cleanup {
     DestroyDebugUtilsMessengerEXT {
+    }
+  }
+}
+~Window {
+  shutdown {
+    glfwDestroyWindow(m_Window)
+    glfwTerminate()
+  }
+}

@@ -71,20 +71,30 @@ void VkContext::init() {
 
 void VkContext::cleanup() {
   LOGFN;
-  vkDestroyDevice(m_Device, nullptr);
+  // Handles may be null if init() threw part way through
+  if (m_Device != VK_NULL_HANDLE) vkDestroyDevice(m_Device, nullptr);
+  m_Device = VK_NULL_HANDLE;
 
-  if (m_EnableValidationLayers) {
+  if (m_Instance == VK_NULL_HANDLE) return;
+
+  if (m_DebugMessenger != VK_NULL_HANDLE) {
     DestroyDebugUtilsMessengerEXT(m_Instance, m_DebugMessenger, nullptr);
   }
 
-  vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
+  if (m_Surface != VK_NULL_HANDLE) vkDestroySurfaceKHR(m_Instance, m_Surface, nullptr);
   vkDestroyInstance(m_Instance, nullptr);
+
+  m_DebugMessenger = VK_NULL_HANDLE;
+  m_Surface = VK_NULL_HANDLE;
+  m_Instance = VK_NULL_HANDLE;
 }
 
 void VkContext::createInstance() {
   LOGFN;
   if (m_EnableValidationLayers && !checkValidationLayerSupport()) {
-    throw std::runtime_error("validation layers requested, but not available!");
+    std::cerr << "[WARNING] validation layers requested, but not available, continuing without them" << std::endl;
+    LOG("[WARNING] validation layers requested, but not available, continuing without them");
+    m_EnableValidationLayers = false;
   }
 
   // Application info

@@ -75,11 +75,11 @@ class VkContext {
 
  private:
   Window* m_Window;
-  VkInstance m_Instance;
-  VkDebugUtilsMessengerEXT m_DebugMessenger;
-  VkSurfaceKHR m_Surface;
+  VkInstance m_Instance = VK_NULL_HANDLE;
+  VkDebugUtilsMessengerEXT m_DebugMessenger = VK_NULL_HANDLE;
+  VkSurfaceKHR m_Surface = VK_NULL_HANDLE;
   VkPhysicalDevice m_PhysicalDevice = VK_NULL_HANDLE;
-  VkDevice m_Device;
+  VkDevice m_Device = VK_NULL_HANDLE;
   VkQueue m_GraphicsQueue;
   VkQueue m_PresentQueue;
   QueueFamilyIndices m_QueueFamilyIndices;
@@ -92,10 +92,11 @@ class VkContext {
   const std::vector<const char*> m_ValidationLayers = {"VK_LAYER_KHRONOS_validation"};
   const std::vector<const char*> m_DeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
+  // Not const: cleared in createInstance() if the layers aren't installed
 #ifdef GLINT_DISABLE_VALIDATION
-  const bool m_EnableValidationLayers = false;
+  bool m_EnableValidationLayers = false;
 #else
-  const bool m_EnableValidationLayers = Config::areValidationLayersEnabled();
+  bool m_EnableValidationLayers = Config::areValidationLayersEnabled();
 #endif
 };
 

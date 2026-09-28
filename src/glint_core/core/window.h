@@ -19,7 +19,10 @@ class Window {
     bool resizable = true;
   };
 
-  Window(const WindowProps& props = WindowProps());
+  // Separate overload instead of a default argument: GCC rejects `= WindowProps()`
+  // for a nested struct with default member initializers (GCC bug 88165)
+  Window() : Window(WindowProps{}) {}
+  Window(const WindowProps& props);
   ~Window();
 
   // Prevent copying

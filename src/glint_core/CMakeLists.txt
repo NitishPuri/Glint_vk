@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 
 set(GLINT_SOURCES 
     core/window.cpp
@@ -19,7 +19,8 @@ set(GLINT_SOURCES
     renderer/descriptor.cpp    
     renderer/texture.cpp
 
-    vks/vk_gltf_model.cpp
+    # WIP port of Sascha Willems' glTF loader, does not compile yet
+    # vks/vk_gltf_model.cpp
     vks/VulkanDevice.cpp
 )
 
@@ -46,7 +47,7 @@ set(GLINT_HEADERS
     renderer/descriptor.h    
     renderer/texture.h
 
-    vks/vk_gltf_model.h
+    # vks/vk_gltf_model.h
     vks/VulkanDevice.h
 )
 
@@ -72,12 +73,14 @@ target_link_libraries(glint_core PUBLIC
     arcball_camera
     ktx
     tinygltf
+    glm_headers
 )
 
 # TODO: Use path shader bin path relative to bin path 
 # and move the bins to a single folder eassier to package
 target_compile_definitions(glint_core PRIVATE
-    BASE_DIR="${CMAKE_SOURCE_DIR}" 
+    BASE_DIR="${CMAKE_SOURCE_DIR}"
+    SHADER_DIR="${CMAKE_BINARY_DIR}/bin/shaders"
     GLM_FORCE_DEPTH_ZERO_TO_ONE
     GLM_FORCE_RADIANS
     # GLM_FORCE_DEFAULT_ALIGNED_GENTYPES

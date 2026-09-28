@@ -1,15 +1,44 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 
 set(THIRD_PARTY_DIR "ext")
 
 
-# GLFW - Pre-compiled binaries
-add_library(glfw INTERFACE)
-set(GLFW_PATH ${CMAKE_CURRENT_SOURCE_DIR}/glfw-3.4.bin.WIN64)
-target_include_directories(glfw INTERFACE ${GLFW_PATH}/include)
-target_link_directories(glfw INTERFACE ${GLFW_PATH}/lib-vc2022)
-target_link_libraries(glfw INTERFACE glfw3)
-set_target_properties(glfw PROPERTIES FOLDER ${THIRD_PARTY_DIR})
+# GLFW
+if (WIN32)
+    # Pre-compiled binaries shipped in ext/
+    add_library(glfw INTERFACE)
+    set(GLFW_PATH ${CMAKE_CURRENT_SOURCE_DIR}/glfw-3.4.bin.WIN64)
+    target_include_directories(glfw INTERFACE ${GLFW_PATH}/include)
+    target_link_directories(glfw INTERFACE ${GLFW_PATH}/lib-vc2022)
+    target_link_libraries(glfw INTERFACE glfw3)
+    set_target_properties(glfw PROPERTIES FOLDER ${THIRD_PARTY_DIR})
+else()
+    # System package (e.g. libglfw3-dev on Debian/Ubuntu), provides the `glfw` target
+    find_package(glfw3 3.3 REQUIRED)
+endif()
+
+# GLM - headers only
+# On Windows it comes from the Vulkan SDK include dir; elsewhere use the system
+# package (libglm-dev) or fetch it.
+add_library(glm_headers INTERFACE)
+if (NOT WIN32)
+    find_package(glm QUIET)
+    if (glm_FOUND)
+        target_link_libraries(glm_headers INTERFACE glm::glm)
+    else()
+        message(STATUS "glm not found, fetching it")
+        include(FetchContent)
+        FetchContent_Declare(glm
+            GIT_REPOSITORY https://github.com/g-truc/glm.git
+            GIT_TAG 1.0.1
+            GIT_SHALLOW TRUE)
+        FetchContent_GetProperties(glm)
+        if (NOT glm_POPULATED)
+            FetchContent_Populate(glm)
+        endif()
+        target_include_directories(glm_headers INTERFACE ${glm_SOURCE_DIR})
+    endif()
+endif()
 
 # STB - headers only
 add_library(stb INTERFACE)

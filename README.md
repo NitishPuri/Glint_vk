@@ -67,6 +67,12 @@
 
 
 
+## Building
+
+- Windows: `configure.bat`, `build.bat`, `run.bat` (needs the Vulkan SDK and `ext/glfw-3.4.bin.WIN64`)
+- Linux: `./build.sh [Debug|Release]`, `./run.sh [Debug|Release]`
+  - `sudo apt install libvulkan-dev libglfw3-dev glslang-tools vulkan-validationlayers libglm-dev`
+
 ### dependencies
 
 - Vulkan SDK

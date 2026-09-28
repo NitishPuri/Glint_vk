@@ -11,6 +11,10 @@
 #define BASE_DIR "."
 #endif
 
+#ifndef SHADER_DIR
+#define SHADER_DIR BASE_DIR "/build/bin/shaders"
+#endif
+
 namespace glint {
 
 void Config::parseCommandLine(int argc, char** argv) {
@@ -73,7 +77,7 @@ void Config::parseEnvironment() {
 
 void Config::initialize(int argc, char** argv) {
   // Default settings
-  instance().m_ShaderPath = std::string(BASE_DIR) + "/build/bin/shaders";
+  instance().m_ShaderPath = SHADER_DIR;
   instance().m_ResourcePath = std::string(BASE_DIR) + "/res";
 
   instance().parseEnvironment();

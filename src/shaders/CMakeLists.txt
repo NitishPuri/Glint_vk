@@ -13,23 +13,34 @@ set(SHADER_OUTPUT_DIR ${CMAKE_BINARY_DIR}/bin/shaders)
 file(MAKE_DIRECTORY ${SHADER_OUTPUT_DIR})
 
 # Custom shader compilation command
-find_program(GLSLC glslc HINTS ${Vulkan_GLSLC_EXECUTABLE} 
+# Prefer glslc (Vulkan SDK / shaderc), fall back to glslangValidator (glslang-tools on Linux)
+find_program(GLSLC glslc HINTS ${Vulkan_GLSLC_EXECUTABLE}
                             $ENV{VULKAN_SDK}/Bin
+                            $ENV{VULKAN_SDK}/bin
                             ${Vulkan_INCLUDE_DIRS}/../Bin)
 
-if(NOT GLSLC)
-    message(FATAL_ERROR "Could not find glslc shader compiler. Please make sure Vulkan SDK is installed correctly.")
+if(GLSLC)
+    set(SHADER_COMPILE_CMD ${GLSLC} -o)
+else()
+    find_program(GLSLANG_VALIDATOR glslangValidator HINTS ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
+                                                        $ENV{VULKAN_SDK}/Bin
+                                                        $ENV{VULKAN_SDK}/bin)
+    if(NOT GLSLANG_VALIDATOR)
+        message(FATAL_ERROR "Could not find glslc or glslangValidator. Install the Vulkan SDK, "
+                            "or on Debian/Ubuntu: sudo apt install glslang-tools")
+    endif()
+    set(SHADER_COMPILE_CMD ${GLSLANG_VALIDATOR} -V -o)
 endif()
 
 # Function to compile shaders
 foreach(SHADER ${SHADERS})
     get_filename_component(FILENAME ${SHADER} NAME)
     set(SPIRV_OUTPUT "${SHADER_OUTPUT_DIR}/${FILENAME}.spv")
-    
+
     # Add custom command to compile shaders
     add_custom_command(
         OUTPUT ${SPIRV_OUTPUT}
-        COMMAND ${GLSLC} -o ${SPIRV_OUTPUT} ${SHADER}
+        COMMAND ${SHADER_COMPILE_CMD} ${SPIRV_OUTPUT} ${SHADER}
         DEPENDS ${SHADER}
         COMMENT "Compiling shader: ${FILENAME}"
         VERBATIM

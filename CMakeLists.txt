@@ -1,8 +1,20 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 project(Glint)
 
 set(CMAKE_CXX_STANDARD 20)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# MSVC defines _DEBUG for debug builds, other compilers don't.
+# Config uses it to turn on logging + validation layers by default.
+if (NOT MSVC)
+    add_compile_definitions($<$<CONFIG:Debug>:_DEBUG>)
+endif()
 
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT")
 

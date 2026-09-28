@@ -2,6 +2,10 @@
 
 Glint (Vulkan) is a personal C++20 Vulkan renderer and learning playground: a small engine library (`glint_core`) plus a sample browser that switches between rendering samples at runtime. It is the Vulkan counterpart of `../Glint_gl`. The roadmap lives in `README.md`, and `arch.md` sketches the builder-style APIs the project is heading toward.
 
+**Status (2026-09-29):** this repo is a *source* for the new side-by-side repo `../glint` (see `../glint/CLAUDE.md` and `../glint/docs/PLAN.md`). Most new work goes there. Here, keep changes to build fixes, documentation, and small fixes that help the port.
+
+**Read `docs/` first**: `architecture.md` (frame loop, frames-in-flight vs swapchain images, caching), `modules.md` (per-class reference with a "Port:" target in glint), `samples.md`, `build.md`, and `known-issues.md` (bugs *not* to carry over into glint).
+
 ## Build & run
 
 The repo lives on a shared NTFS drive (`/mnt/e`) and is built from both Windows (MSVC / Visual Studio) and Linux (GCC + Ninja). Keep both working. Source files are committed with **CRLF** line endings, so preserve CRLF when you edit existing files. Shell scripts (`*.sh`) must stay LF.
@@ -24,7 +28,7 @@ There are no tests yet.
 
 - CLI: `-l/-L` enables/disables logging, `-v/-V` enables/disables validation layers, `-s <shader dir>`, `-r <resource dir>`. Any other `--name value` or bare flag goes into a generic option map, which you query with `Config::isOptionSet("name")`. For example, `--enable_command_buffer_caching` (see below).
 - Env: `GLINT_ENABLE_LOGGING`, `GLINT_ENABLE_VALIDATION`, `GLINT_SHADER_PATH`, `GLINT_RESOURCE_PATH`.
-- Debug builds (`_DEBUG`, which CMake also defines for non-MSVC) turn logging and validation on by default. **If `VK_LAYER_KHRONOS_validation` isn't installed, instance creation throws.** Install the layers or pass `-V`.
+- Debug builds (`_DEBUG`, which CMake also defines for non-MSVC) turn logging and validation on by default. If `VK_LAYER_KHRONOS_validation` isn't installed, the app prints a warning and continues without validation (`sudo apt install vulkan-validationlayers`, or use the LunarG SDK).
 - Default paths are baked in at compile time: `SHADER_DIR` = `<build dir>/bin/shaders` and `BASE_DIR` = the source root (resources come from `res/`).
 - The logger writes an indented call trace (`LOGFN`, `LOG(...)`) to stdout and to `log.txt` in the CWD. `log.txt` is tracked in git, so don't commit the churn from running the app.
 
@@ -39,10 +43,13 @@ src/glint_core/      static lib, namespace glint
   renderer/          VkContext (instance/device/surface), SwapChain, RenderPass, Pipeline(+PipelineConfig),
                      CommandManager, SynchronizationManager, Descriptor*, Mesh/MeshFactory, Texture, Vertex,
                      vk_utils/vk_tools/initializers (helpers, partly borrowed from Sascha Willems' samples)
-  vks/               WIP port of Sascha Willems' glTF loader. vk_gltf_model.cpp is excluded from the build (doesn't compile)
+  vks/               Sascha Willems code: VulkanDevice (all commented out) and a WIP glTF loader
+                     (vk_gltf_model.cpp is excluded from the build; it doesn't compile)
 src/glint_ui/        ImGuiManager (imgui GLFW + Vulkan backends)
 src/samples/         glint_samples executable: the sample browser
-src/minimal/         triangle, cube: standalone minimal apps (add via add_glint_app() in its CMakeLists)
+src/minimal/         triangle, cube: separate executables built on glint_core's Renderer (not raw Vulkan);
+                     add more via add_glint_app() in its CMakeLists
+docs/                architecture notes (see above)
 res/                 textures/models (viking_room.obj etc.)
 ```
 Files with a trailing underscore (`input_.h`, `material_.h`, `shader_.h`, `scene_graph_.h`) are unbuilt design sketches, and `*_.h` is gitignored.
